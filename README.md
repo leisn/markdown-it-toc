@@ -66,7 +66,6 @@ console.log(md.render('[toc]\n# h1\n## h2-1\n## h2-2'));
 
 #### Overrides by globalOptions
 
-> Only use in heading  
 
 * **anchorClass (String)**  HTML class for entire anchor part (default `'toc-content-anchor'`)
 
@@ -85,6 +84,8 @@ console.log(md.render('[toc]\n# h1\n## h2-1\n## h2-2'));
   **param (Array)** Index array of heading. `E.g:` h1 is `[1]`, h2 is `[1,1]`, another h2 is `[1,2]`
   
 ### headingOptions
+
+> Only use in heading  
 
 #### Overrides by globalOptions
 
