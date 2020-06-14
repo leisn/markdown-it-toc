@@ -1,5 +1,5 @@
 {
-  "name": "markdown-it-toc",
+  "name": "@leisn/markdown-it-toc",
   "version": "0.0.9",
   "description": "Markdown-it plugin to make table of contents, default parse tag [toc].",
   "main": "index.js",
