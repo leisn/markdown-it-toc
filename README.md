@@ -8,6 +8,52 @@ Markdown-it plugin to make table of contents, default parse tag [toc].
 $ npm install @leisn/markdown-it-toc
 ```
 
+## E.g
+
+### Source markdown
+
+```markdown
+[toc]
+# H1
+## H2-1
+### H3
+# H2-2
+```
+### Result document
+```html
+<div id="toc" class="toc-wrapper">
+    <li class="toc-item">
+        <a href="#toc-no.1" class="toc-content-anchor">
+            <span class="toc-content-no">1 </span>
+            H1
+        </a>
+    </li>
+    <ul class="toc-list">
+        <li class="toc-item">
+            <a href="#toc-no.1-1" class="toc-content-anchor">
+                <span class="toc-content-no">1.1 </span>
+                H2-1
+            </a>
+        </li>
+        <ul class="toc-list">
+            <li class="toc-item">
+                <a href="#toc-no.1-1-1" class="toc-content-anchor">
+                    <span class="toc-content-no">1.1.1 </span>
+                    H3
+                </a>
+            </li>
+        </ul>
+        <li class="toc-item">
+            <a href="#toc-no.1-2" class="toc-content-anchor">
+                <span class="toc-content-no">1.2 </span>
+                H2-2</a>
+        </li>
+    </ul>
+</div>
+```
+
+
+
 ## Usage
 
 ```javascript
