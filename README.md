@@ -1,6 +1,9 @@
-# @leisn/markdown-it-toc
+# @leisn/markdown-it-toc 
+
+![GitHub](https://img.shields.io/github/license/leisn/markdown-it-toc) ![npm (scoped)](https://img.shields.io/npm/v/@leisn/markdown-it-toc)
 
 Markdown-it plugin to make table of contents, default parse tag [toc].
+
 
 ## Installaton
 

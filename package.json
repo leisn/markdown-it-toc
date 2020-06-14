@@ -7,7 +7,6 @@
   "license": "MIT",
   "keywords": [
     "markdown",
-    "toc",
     "markdown-it",
     "markdown-it-plugin",
     "markdown-it-toc"
