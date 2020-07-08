@@ -9,50 +9,78 @@ Markdown-it plugin to make table of contents, default parse tag [toc].
 
 ```bash
 $ npm install @leisn/markdown-it-toc
+or
+$ yarn add @leisn/markdown-it-toc
 ```
 
-## E.g
+## E.g. default
 
 ### Source markdown
 
 ```markdown
 [toc]
-# H1
+# H1-1
 ## H2-1
-### H3
-# H2-2
+### H3-1
+# H1-2
 ```
 ### Result document
 ```html
-<div id="toc" class="toc-wrapper">
-    <li class="toc-item">
-        <a href="#toc-no.1" class="toc-content-anchor">
-            <span class="toc-content-no">1 </span>
-            H1
+<p>
+  <div id="toc" class="toc-wrapper">
+    <ul>
+      <li>
+        <a href="#toc.1">
+          <span class="toc-item-index">1</span>
+          H1-1
         </a>
-    </li>
-    <ul class="toc-list">
-        <li class="toc-item">
-            <a href="#toc-no.1-1" class="toc-content-anchor">
-                <span class="toc-content-no">1.1 </span>
-                H2-1
+      </li>
+      <ul>
+        <li>
+          <a href="#toc.1-1">
+            <span class="toc-item-index">1.1</span>
+            H2-1
+          </a>
+        </li>
+        <ul>
+          <li>
+            <a href="#toc.1-1-1">
+              <span class="toc-item-index">1.1.1</span>
+              H3-1
             </a>
-        </li>
-        <ul class="toc-list">
-            <li class="toc-item">
-                <a href="#toc-no.1-1-1" class="toc-content-anchor">
-                    <span class="toc-content-no">1.1.1 </span>
-                    H3
-                </a>
-            </li>
+          </li>
         </ul>
-        <li class="toc-item">
-            <a href="#toc-no.1-2" class="toc-content-anchor">
-                <span class="toc-content-no">1.2 </span>
-                H2-2</a>
-        </li>
-    </ul>
-</div>
+      </ul>
+      <li>
+        <a href="#toc.2">
+          <span class="toc-item-index">2</span>
+          H1-2
+        </a>
+      </li>
+     </ul>
+  </div>
+</p>
+
+<h1 id="toc.1" class="toc-heading">
+  <span class="toc-heading-prefix">1</span>
+  <span class="toc-heading-content">H1-1</span>
+  <a href="#toc" class="toc-heading-suffix">#</a>
+</h1>
+<h2 id="toc.1-1" class="toc-heading">
+  <span class="toc-heading-prefix">1.1</span>
+  <span class="toc-heading-content">H2-1</span>
+  <a href="#toc" class="toc-heading-suffix">#</a>
+</h2>
+<h3 id="toc.1-1-1" class="toc-heading">
+  <span class="toc-heading-prefix">1.1.1</span>
+  <span class="toc-heading-content">H3-1</span>
+  <a href="#toc" class="toc-heading-suffix">#</a>
+</h3>
+<h1 id="toc.2" class="toc-heading">
+  <span class="toc-heading-prefix">2</span>
+  <span class="toc-heading-content">H1-2</span>
+  <a href="#toc" class="toc-heading-suffix">#</a>
+</h1>
 ```
 
 
@@ -61,103 +89,81 @@ $ npm install @leisn/markdown-it-toc
 
 ```javascript
 const md = require('markdown-it')(mkOpts)
-	.use(require('@leisn/markdown-it-toc'),
-         globalOptions,contentOptions,headingOptions);
+	.use(require('@leisn/markdown-it-toc'),options);
 console.log(md.render('[toc]\n# h1\n## h2-1\n## h2-2'));
 ```
 
-### globalOptions
-
->  `globalOptions` will override `contentOptions` and  `headingOptions` 
-
-#### global
+## Options
 
 
-* **tocRegexp (RegExp)**  Regular expression to detect TOC in source (default `/\[toc\]/im`)
-* **hTopLevel (Number)**  Top heading level for parser (default `1` for `#`)
-* **hLowLevel (Number)**  Lowest heading level for parser (default `6` for `######`)
-* **anchorNumberIdPrefix (String)**  Prefix for each ID attribute of headings (default `toc-no.`)
-* **getToc (Function)**  get \[TOC\] document result in HTML  (default `null` )
-	
-	> return **true** to still show in HTML document, return `undefined or false` to avoid it.
+* **tocRegexp?: RegExp**  Regular expression to detect TOC  (default `/\[toc\]/im`).
 
+* **tocTag?: string**  Tag for toc root element ( `div` by default ).
 
-#### override others
-* **anchorClass (String)**  HTML class for entire anchor part (default `undefined`)
+* **tocAttrs?: string**  Attributes for toc root element( `id="toc" class="toc-wrapper"` by default ).
 
-* **useAnchorString (Boolean)**  Enable use some symbol before number index and heading (default `undefined`)
+* **headingAttrs?: string**  Attributes for headings `h1,h2,h3...` ( `class="toc-heading"` by default )
 
-* **useAnchorNumber (Boolean)**  Enable use  number index before heading (default `undefined`)
+  ```html
+  --------------------------
+  # h1 title
+  --------------------------
+  <h1 {headingAttrs}>
+  <span>h1 title</span>
+  </h1>
+  ```
 
-* **anchorSymbol (String)** The symbol use  before number index and heading (default `undefined`)
+* **headingContentAttrs?: string**  Attributes for headings content `span` ( `class="toc-heading-content"` by default ) 
+  ```html
+  --------------------------
+  # headingContent
+  --------------------------
+  <h1>
+  <span {headingContentAttrs} > headingContent </span>
+  </h1>
+  ```
 
-* **anchorSymbolClass (String)**  HTML class for symbol part (default `undefined`)
+* **getToc?(toc: string): boolean** Get toc result, return false if you don't want it show in the result html document, else return true(default `null`).  `toc` : the result html document
 
-* **anchorNumberClass (String)**  HTML class for number index part (default `undefined`)
+* **getPathId?(info): string** Get id content for forwarding in page,  (e.g. for `info.paths=[1,2]` default return `toc-no.1-2` )
 
-* **getAnchorNumber (Function)**  Custom number index generator, show in HTML text not in attributes (default `undefined`)
+* **getTocItemContent?(info): string** Content inside toc item `a` (html, include item heading text)
 
-  **param (Array)** Index array of heading. `E.g:` h1 is `[1]`, h2 is `[1,1]`, another h2 is `[1,2]`
+* **getHeadingPrefix?(info): string** Content inside heading (html, before heading text)
+
+  ```html
+  --------------------------
+  # h1 title
+  --------------------------
+  <h1>
+  {getHeadingPrefix}
+  <span>h1 title</span>
+  </h1>
+  ```
+
   
-  > If not set in `lobalOptions` and `contentOptions` or `headingOptions` , it use `[param].join('.') +' '`
 
-### contentOptions
+* **getHeadingSuffix?(info): string** Content inside heading (html, after heading text)
 
-> Only use in table of contents generator  
+  ```html
+  --------------------------
+  # h1 title
+  --------------------------
+  <h1>
+  <span>h1 title</span>
+  {getHeadingSuffix}
+  </h1>
+  ```
 
-#### Custom options
-* **tocHeader(String)**  Header of TOC, should be full tags. `E.g:<h3>Table of Content</h3>`  (default `''`)
-* **tocWrapperId(String)**  HTML ID for TOC Wrapper (default `'toc'`)
-* **tocWrapperClass(String)**  HTML class for TOC Wrapper (default `'toc-wrapper'`)
-* **tocListClass(String)**  HTML class for TOC list , tag of `ul`  (default `'toc-list'`)
-* **tocItemClass(String)**  HTML class for TOC list  item, tag of `li`  (default `'toc-item'`)
-* **headingInLink(Boolean)**  Enable the content's link include heading (default `true`)
-
-#### Overrides by globalOptions
-
-
-* **anchorClass (String)**  HTML class for entire anchor part (default `'toc-content-anchor'`)
-
-* **useAnchorString (Boolean)**  Enable use some symbol before number index and heading (default `false`)
-
-* **useAnchorNumber (Boolean)**  Enable use  number index before heading (default `false`)
-
-* **anchorSymbol (String)** The symbol use  before number index and heading (default `'# '`)
-
-* **anchorSymbolClass (String)**  HTML class for symbol part (default `'toc-content-syl'`)
-
-* **anchorNumberClass (String)**  HTML class for number index part (default `'toc-content-no'`)
-
-* **getAnchorNumber (Function)**  Custom number index generator, show in HTML text not in attributes (default `null`)
-
-  **param (Array)** Index array of heading. `E.g:` h1 is `[1]`, h2 is `[1,1]`, another h2 is `[1,2]`
   
-### headingOptions
 
-> Only use in heading  
-
-#### Overrides by globalOptions
-
-* **anchorClass (String)**  HTML class for entire anchor part (default `'toc-heading-anchor'`)
-
-* **useAnchorString (Boolean)**  Enable use some symbol before number index and heading (default `false`)
-
-* **useAnchorNumber (Boolean)**  Enable use  number index before heading (default `false`)
-
-* **anchorSymbol (String)** The symbol use  before number index and heading (default `'§ '`)
-
-* **anchorSymbolClass (String)**  HTML class for symbol part (default `'toc-heading-syl'`)
-
-* **anchorNumberClass (String)**  HTML class for number index part (default `'toc-heading-no'`)
-
-* **getAnchorNumber (Function)**  Custom number index generator, show in HTML text not in attributes (default `null`)
-
-  **param (Array)** Index array of heading. `E.g:` h1 is `[1]`, h2 is `[1,1]`, another h2 is `[1,2]`
 
 ## Test
 
 ```bash
 $ npm run test
+or
+$ yarn test
 ```
 
 

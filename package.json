@@ -1,8 +1,8 @@
 {
   "name": "@leisn/markdown-it-toc",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Markdown-it plugin to make table of contents, default parse tag [toc].",
-  "main": "index.js",
+  "main": "./lib/index.js",
   "author": "leisn",
   "license": "MIT",
   "keywords": [
@@ -17,13 +17,15 @@
   },
   "homepage": "https://github.com/leisn/markdown-it-toc#readme",
   "scripts": {
-    "lint": "eslint --fix *.js",
-    "test": "mocha test/*.js --reporter spec"
+    "test": "SET NODE_ENV=test&& mocha --harmony --reporter spec --require should test/*.js",
+    "tsc": "tsc -b"
   },
   "dependencies": {},
   "devDependencies": {
-    "eslint": "^7.2.0",
+    "@types/markdown-it": "^10.0.1",
+    "@types/punycode": "^2.1.0",
     "markdown-it": "^11.0.0",
-    "mocha": "^8.0.1"
+    "mocha": "^8.0.1",
+    "should": "^13.2.3"
   }
 }

@@ -1,138 +1,69 @@
 'use strict';
+const fs = require('fs');
+const path = require('path');
 
-const assert = require('assert');
-
-const md = require('markdown-it');
+const mi = require('markdown-it');
 const me = require('../');
 
-describe('#no global config', function () {
-    var r = md().use(me);
+describe('markdown-it-toc', function () {
     it("should be empty toc", function () {
-        let content = r.render('[toc]');
-        assert.equal(content, '<p><div id="toc" class="toc-wrapper"></div></p>\n');
-    });
-    it("should be one title", function () {
-        let content = r.render('# H1');
-        assert.equal(content, '<h1><em id="toc-no.1" class="toc-heading-anchor"></em>H1</h1>\n');
-    });
-    it("should be two title", function () {
-        let content = r.render('# H1\n## H2');
-        assert.equal(content, '<h1><em id="toc-no.1" class="toc-heading-anchor"></em>H1</h1>\n<h2><em id="toc-no.1-1" class="toc-heading-anchor"></em>H2</h2>\n');
+        let md = mi().use(me);
+        let content = md.render('[toc]');
+        content.should.be.String();
+        content.includes('[toc]').should.be.exactly(false);
+        content.includes('id="toc"').should.be.exactly(true);
+        content.includes('<ul>').should.be.exactly(false);
     });
 
-    it("should be toc with two title", function () {
-        let content = r.render('[toc]\n# H1\n## H2');
-        assert.equal(content, '<p><div id="toc" class="toc-wrapper">' +
-            '<li class="toc-item"><a href="#toc-no.1" class="toc-content-anchor">H1</a></li>' +
-            '<ul class="toc-list">' +
-            '<li class="toc-item"><a href="#toc-no.1-1" class="toc-content-anchor">H2</a></li>' +
-            '</ul>' +
-            '</div></p>\n' +
-            '<h1><em id="toc-no.1" class="toc-heading-anchor"></em>H1</h1>\n<h2><em id="toc-no.1-1" class="toc-heading-anchor"></em>H2</h2>\n');
-    });
-});
+    describe('test.md', function () {
+        var doc = '';
 
-describe('#use anchor string', function () {
-    var r = md().use(me, {
-        useAnchorString: true,
-        anchorSymbol: '#'
-    });
-    it("should be empty toc", function () {
-        let content = r.render('[toc]');
-        assert.equal(content, '<p><div id="toc" class="toc-wrapper"></div></p>\n');
-    });
-    it("should be one title", function () {
-        let content = r.render('# H1');
-        assert.equal(content, '<h1><em id="toc-no.1" class="toc-heading-anchor"><span class="toc-heading-syl">#</span></em>H1</h1>\n');
-    });
-    it("should be two title", function () {
-        let content = r.render('# H1\n## H2');
-        assert.equal(content, '<h1><em id="toc-no.1" class="toc-heading-anchor"><span class="toc-heading-syl">#</span></em>H1</h1>\n' +
-            '<h2><em id="toc-no.1-1" class="toc-heading-anchor"><span class="toc-heading-syl">#</span></em>H2</h2>\n');
-    });
+        before(function () {
+            doc = fs.readFileSync(path.join(__dirname, 'test.md'), 'utf-8');
 
-    it("should be toc with two title", function () {
-        let content = r.render('[toc]\n# H1\n## H2');
-        assert.equal(content, '<p><div id="toc" class="toc-wrapper">' +
-            '<li class="toc-item">' +
-            '<a href="#toc-no.1" class="toc-content-anchor">' +
-            '<span class="toc-content-syl">#</span>H1</a></li>' +
-            '<ul class="toc-list">' +
-            '<li class="toc-item"><a href="#toc-no.1-1" class="toc-content-anchor">' +
-            '<span class="toc-content-syl">#</span>H2</a></li>' +
-            '</ul>' +
-            '</div></p>\n' +
-            '<h1><em id="toc-no.1" class="toc-heading-anchor"><span class="toc-heading-syl">#</span></em>H1</h1>\n' +
-            '<h2><em id="toc-no.1-1" class="toc-heading-anchor"><span class="toc-heading-syl">#</span></em>H2</h2>\n');
-    });
-});
+            let file = path.join(__dirname, 'test.html');
+            if (!fs.existsSync(file)) {
+                let content = mi().use(me).render(doc);
+                content = '<!doctype html><html><head><title>Test [TOC]</title>\
+                <link rel="stylesheet" href="./toc.css"></head><body>' +
+                    content + '</body></html>';
+                fs.writeFileSync(file, content);
+                console.log('render done.');
+            }
+        });
 
-describe('#use anchor number', function () {
-    var r = md().use(me, {
-        useAnchorNumber: true,
-        getAnchorNumber: function (paths) {
-            return paths.join('-') + '_';
-        }
-    });
-    it("should be empty toc", function () {
-        let content = r.render('[toc]');
-        assert.equal(content, '<p><div id="toc" class="toc-wrapper"></div></p>\n');
-    });
-    it("should be one title", function () {
-        let content = r.render('# H1');
-        assert.equal(content, '<h1><em id="toc-no.1" class="toc-heading-anchor"><span class="toc-heading-no">1_</span></em>H1</h1>\n');
-    });
-    it("should be two title", function () {
-        let content = r.render('# H1\n## H2');
-        assert.equal(content, '<h1><em id="toc-no.1" class="toc-heading-anchor"><span class="toc-heading-no">1_</span></em>H1</h1>\n' +
-            '<h2><em id="toc-no.1-1" class="toc-heading-anchor"><span class="toc-heading-no">1-1_</span></em>H2</h2>\n');
-    });
+        it("should be a default toc", function () {
+            let md = mi().use(me);
+            let content = md.render(doc);
+            content.should.be.String();
+            content.includes('[toc]').should.be.exactly(false);
+            content.includes('id="toc"').should.be.exactly(true);
+            content.includes('<ul>').should.be.exactly(true);
+            content.includes('<li>').should.be.exactly(true);
+            content.includes('toc-item-index').should.be.exactly(true);
+            content.includes('toc-heading').should.be.exactly(true);
+            content.includes('toc-heading-prefix').should.be.exactly(true);
+            content.includes('toc-heading-content').should.be.exactly(true);
+            content.includes('toc-heading-suffix').should.be.exactly(true);
+        });
 
-    it("should be toc with two title", function () {
-        let content = r.render('[toc]\n# H1\n## H2');
-        assert.equal(content, '<p><div id="toc" class="toc-wrapper">' +
-            '<li class="toc-item">' +
-            '<a href="#toc-no.1" class="toc-content-anchor">' +
-            '<span class="toc-content-no">1_</span>H1</a></li>' +
-            '<ul class="toc-list">' +
-            '<li class="toc-item"><a href="#toc-no.1-1" class="toc-content-anchor">' +
-            '<span class="toc-content-no">1-1_</span>H2</a></li>' +
-            '</ul>' +
-            '</div></p>\n' +
-            '<h1><em id="toc-no.1" class="toc-heading-anchor"><span class="toc-heading-no">1_</span></em>H1</h1>\n' +
-            '<h2><em id="toc-no.1-1" class="toc-heading-anchor"><span class="toc-heading-no">1-1_</span></em>H2</h2>\n');
-    });
-});
-
-describe('#use level 2-3', function () {
-    var r = md().use(me, {
-        hTopLevel: 2,
-        hLowLevel: 3
-    });
-
-    it("should be empty toc", function () {
-        let content = r.render('[toc]');
-        assert.equal(content, '<p><div id="toc" class="toc-wrapper"></div></p>\n');
-    });
-
-    it("should be h1 no cover title", function () {
-        let content = r.render('# H1');
-        assert.equal(content, '<h1>H1</h1>\n');
-    });
-
-    it("should be only cover h2 title ", function () {
-        let content = r.render('# H1\n## H2');
-        assert.equal(content, '<h1>H1</h1>\n' +
-            '<h2><em id="toc-no.1-1" class="toc-heading-anchor"></em>H2</h2>\n');
-    });
-
-    it("should be toc with only cover h2 title", function () {
-        let content = r.render('[toc]\n# H1\n## H2');
-        assert.equal(content, '<p><div id="toc" class="toc-wrapper">' +
-            '<li class="toc-item">' +
-            '<a href="#toc-no.1-1" class="toc-content-anchor">H2</a></li>' +
-            '</div></p>\n' +
-            '<h1>H1</h1>\n' +
-            '<h2><em id="toc-no.1-1" class="toc-heading-anchor"></em>H2</h2>\n');
+        it("should no heading-suffix", function () {
+            let md = mi().use(me, {
+                getHeadingSuffix: function () {
+                    return '';
+                }
+            });
+            let content = md.render(doc);
+            content.should.be.String();
+            content.includes('[toc]').should.be.exactly(false);
+            content.includes('id="toc"').should.be.exactly(true);
+            content.includes('<ul>').should.be.exactly(true);
+            content.includes('<li>').should.be.exactly(true);
+            content.includes('toc-item-index').should.be.exactly(true);
+            content.includes('toc-heading').should.be.exactly(true);
+            content.includes('toc-heading-prefix').should.be.exactly(true);
+            content.includes('toc-heading-content').should.be.exactly(true);
+            content.includes('toc-heading-suffix').should.be.exactly(false);
+        });
     });
 });

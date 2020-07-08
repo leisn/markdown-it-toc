@@ -1,0 +1,31 @@
+.toc-item-index,
+.toc-heading-prefix {
+    padding-right: .618em;
+}
+
+.toc-wrapper ul {
+    list-style: none;
+    padding-left: 1.2em;
+}
+
+.toc-wrapper li a {
+    text-decoration: none;
+}
+
+.toc-wrapper li a:hover {
+    text-decoration: underline;
+}
+
+.toc-heading {
+    display: flex;
+    flex-direction: row;
+}
+
+.toc-heading-suffix {
+    font-weight: 400;
+    text-decoration: none;
+}
+
+.toc-heading-content {
+    flex: 1;
+}
