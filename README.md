@@ -4,7 +4,6 @@
 
 Markdown-it plugin to make table of contents, default parse tag [toc].
 
-
 ## Installaton
 
 ```bash
@@ -24,7 +23,9 @@ $ yarn add @leisn/markdown-it-toc
 ### H3-1
 # H1-2
 ```
+
 ### Result document
+
 ```html
 <p>
   <div id="toc" class="toc-wrapper">
@@ -83,18 +84,14 @@ $ yarn add @leisn/markdown-it-toc
 </h1>
 ```
 
-
-
 ## Usage
 
 ```javascript
-const md = require('markdown-it')(mkOpts)
-	.use(require('@leisn/markdown-it-toc'),options);
+const md = require('markdown-it')(mkOpts) .use(require('@leisn/markdown-it-toc'),options);
 console.log(md.render('[toc]\n# h1\n## h2-1\n## h2-2'));
 ```
 
 ## Options
-
 
 * **tocRegexp?: RegExp**  Regular expression to detect TOC  (default `/\[toc\]/im`).
 
@@ -113,7 +110,8 @@ console.log(md.render('[toc]\n# h1\n## h2-1\n## h2-2'));
   </h1>
   ```
 
-* **headingContentAttrs?: string**  Attributes for headings content `span` ( `class="toc-heading-content"` by default ) 
+* **headingContentAttrs?: string**  Attributes for headings content `span` ( `class="toc-heading-content"` by default )
+
   ```html
   --------------------------
   # headingContent
@@ -141,8 +139,6 @@ console.log(md.render('[toc]\n# h1\n## h2-1\n## h2-2'));
   </h1>
   ```
 
-  
-
 * **getHeadingSuffix?(info): string** Content inside heading (html, after heading text)
 
   ```html
@@ -155,9 +151,6 @@ console.log(md.render('[toc]\n# h1\n## h2-1\n## h2-2'));
   </h1>
   ```
 
-  
-
-
 ## Test
 
 ```bash
@@ -165,8 +158,6 @@ $ npm run test
 or
 $ yarn test
 ```
-
-
 
 ## LICENSE
 
