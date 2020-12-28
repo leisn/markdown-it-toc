@@ -1,4 +1,4 @@
-# @leisn/markdown-it-toc 
+# @leisn/markdown-it-toc
 
 ![GitHub](https://img.shields.io/github/license/leisn/markdown-it-toc) ![npm (scoped)](https://img.shields.io/npm/v/@leisn/markdown-it-toc)
 
